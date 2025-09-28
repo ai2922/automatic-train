@@ -1,106 +1,1581 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>金双科个人简历</title>
-    <style>
-        body {
-            opacity: 0.5;
-            position: relative;
-            margin: 0;
-            padding: 0;
-            background-image: url("./二次元背景.png");
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: scroll;
-        }
+    <title>师生互选平台</title>
+    <!-- 引入外部资源 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
 
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: #fff;
+    <!-- Tailwind CSS 配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#165DFF',
+                        secondary: '#36BFFA',
+                        success: '#27AE60',
+                        warning: '#F59E0B',
+                        danger: '#DC2626',
+                        dark: '#1F2937',
+                        light: '#F9FAFB'
+                    },
+                    fontFamily: {
+                        inter: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                },
+            }
         }
+    </script>
 
-        h1 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #333;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-        }
-
-        .section {
-            margin-bottom: 30px;
-        }
-
-        .section-title {
-            font-size: 24px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            color: #333;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
-        }
-
-        .section-content {
-            margin-left: 20px;
-        }
-
-        .highlight {
-            font-weight: bold;
-            color: #007BFF;
-        }
-
-        .skill {
-            display: inline-block;
-            padding: 5px 10px;
-            margin: 5px;
-            background-color: #007BFF;
-            color: #fff;
-            border-radius: 5px;
-        }
-    </style>
+    <!-- 自定义工具类 -->
+    <style type="text/tailwindcss">
+        @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .card-shadow {
+        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.02);
+      }
+      .btn-hover {
+        transition: all 0.3s ease;
+      }
+      .btn-hover:hover {
+        transform: translateY(-2px);
+      }
+      .input-focus {
+        transition: all 0.2s ease;
+      }
+      .input-focus:focus {
+        box-shadow: 0 0 0 3px rgba(22, 93, 255, 0.2);
+        border-color: #165DFF;
+      }
+      .match-bar {
+        height: 8px;
+        border-radius: 4px;
+        background: linear-gradient(to right, #27AE60 0%, #F59E0B 50%, #DC2626 100%);
+      }
+    }
+  </style>
 </head>
 
-<body>
-    <div class="container">
-        <h1>金双科个人简历</h1>
-        <div class="section">
-            <h2 class="section-title">个人信息</h2>
-            <div class="section-content">
-                <p><span class="highlight">姓名：</span>金双科</p>
-                <p><span class="highlight">年龄：</span>18岁</p>
-                <p><span class="highlight">邮箱：</span>jinshuangke@bupt.edu.cn</p>
-                <p><span class="highlight">电话：</span>19838702961</p>
-                <p><span class="highlight">QQ: </span>2922580313</p>
-                <p><span class="highlight">微信：</span>jsk2922580313</p>
+<body class="font-inter bg-gray-50 min-h-screen flex flex-col">
+    <!-- 导航栏 -->
+    <header class="bg-white shadow-sm sticky top-0 z-50 transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center space-x-2">
+                    <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center">
+                        <i class="fa fa-graduation-cap text-white text-xl"></i>
+                    </div>
+                    <h1 class="text-xl font-bold text-dark">师生互选平台</h1>
+                </div>
+
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="#home" class="text-gray-600 hover:text-primary transition-colors duration-200">首页</a>
+                    <a href="#students" class="text-gray-600 hover:text-primary transition-colors duration-200">学生列表</a>
+                    <a href="#teachers" class="text-gray-600 hover:text-primary transition-colors duration-200">教师列表</a>
+                    <a href="#matches" class="text-gray-600 hover:text-primary transition-colors duration-200">智能匹配</a>
+                    <a href="#about" class="text-gray-600 hover:text-primary transition-colors duration-200">关于平台</a>
+                </nav>
+
+                <div class="flex items-center space-x-4">
+                    <button id="loginBtn"
+                        class="hidden md:block px-4 py-2 text-primary border border-primary rounded-lg hover:bg-primary/5 transition-colors duration-200">
+                        登录
+                    </button>
+                    <button id="registerBtn"
+                        class="hidden md:block px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors duration-200 btn-hover">
+                        注册
+                    </button>
+                    <button id="mobileMenuBtn" class="md:hidden text-gray-500 hover:text-primary">
+                        <i class="fa fa-bars text-xl"></i>
+                    </button>
+                </div>
             </div>
         </div>
-        <div class="section">
-            <h2 class="section-title">教育经历</h2>
-            <div class="section-content">
-                <p><span class="highlight">学校：</span>北京邮电大学</p>
-                <p><span class="highlight">专业：</span>人工智能</p>
-                <p><span class="highlight">学历：</span>本科</p>
-                <p><span class="highlight">入学时间：</span>2024年</p>
-            </div>
-            <div class="section">
-                <h2 class="section-title">技能</h2>
-                <div class="section-content">
-                    <div class="skill">HTML</div>
-                    <div class="skill">CSS</div>
-                    <div class="skill">JavaScript</div>
-                    <div class="skill">Git</div>
+
+        <!-- 移动端菜单 -->
+        <div id="mobileMenu" class="md:hidden hidden bg-white border-t">
+            <div class="container mx-auto px-4 py-3 space-y-3">
+                <a href="#home" class="block py-2 text-gray-600 hover:text-primary">首页</a>
+                <a href="#students" class="block py-2 text-gray-600 hover:text-primary">学生列表</a>
+                <a href="#teachers" class="block py-2 text-gray-600 hover:text-primary">教师列表</a>
+                <a href="#matches" class="block py-2 text-gray-600 hover:text-primary">智能匹配</a>
+                <a href="#about" class="block py-2 text-gray-600 hover:text-primary">关于平台</a>
+                <div class="flex space-x-3 pt-2 border-t">
+                    <button class="flex-1 px-4 py-2 text-primary border border-primary rounded-lg">
+                        登录
+                    </button>
+                    <button class="flex-1 px-4 py-2 bg-primary text-white rounded-lg">
+                        注册
+                    </button>
                 </div>
             </div>
-            <div class="section">
-                <h2 class="section-title">项目经历</h2>
-                <div class="section-content">
-                    <p><span class="highlight">项目名称：</span>个人简历网站</p>
-                    <p><span class="highlight">项目描述：</span>使用HTML、CSS、JavaScript构建的个人简历网站:展示个人信息、教育经历、技能等内容。</p>
+        </div>
+    </header>
+
+    <!-- 主要内容 -->
+    <main class="flex-grow">
+        <!-- 英雄区域 -->
+        <section id="home" class="relative bg-gradient-to-br from-primary/90 to-primary overflow-hidden">
+            <div class="absolute inset-0 opacity-10">
+                <div class="absolute inset-0 bg-[url('https://picsum.photos/id/1/1200/800')] bg-cover bg-center"></div>
+            </div>
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 relative z-10">
+                <div class="max-w-3xl mx-auto text-center">
+                    <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-white leading-tight mb-6 animate-fade-in">
+                        连接师生，共创未来
+                    </h1>
+                    <p class="text-[clamp(1rem,2vw,1.25rem)] text-white/90 mb-8 animate-fade-in animation-delay-200">
+                        我们的平台为学生和教师提供了一个便捷的双向选择渠道，并通过AI智能匹配技术，帮助您找到最适合的合作伙伴。
+                    </p>
+                    <div class="flex flex-col sm:flex-row justify-center gap-4 animate-fade-in animation-delay-400">
+                        <button id="studentRegBtn"
+                            class="px-6 py-3 bg-white text-primary font-medium rounded-lg hover:bg-gray-100 transition-all duration-200 btn-hover">
+                            <i class="fa fa-user-plus mr-2"></i>学生注册
+                        </button>
+                        <button id="teacherRegBtn"
+                            class="px-6 py-3 bg-transparent text-white border border-white font-medium rounded-lg hover:bg-white/10 transition-all duration-200 btn-hover">
+                            <i class="fa fa-user-plus mr-2"></i>教师注册
+                        </button>
+                        <button id="matchBtn"
+                            class="px-6 py-3 bg-white/20 text-white font-medium rounded-lg hover:bg-white/30 transition-all duration-200 btn-hover">
+                            <i class="fa fa-magic mr-2"></i>智能匹配
+                        </button>
+                    </div>
                 </div>
             </div>
+            <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-50 to-transparent"></div>
+        </section>
+
+        <!-- 信息注册区域 -->
+        <section class="py-12 md:py-16 bg-gray-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-4xl mx-auto">
+                    <div class="text-center mb-12">
+                        <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-dark mb-4">注册您的信息</h2>
+                        <p class="text-gray-600 max-w-2xl mx-auto">填写您的详细信息，创建您的个人档案，开始寻找最适合的合作伙伴。</p>
+                    </div>
+
+                    <!-- 注册类型选择器 -->
+                    <div class="flex justify-center mb-8">
+                        <div class="inline-flex rounded-lg overflow-hidden shadow-sm border border-gray-200">
+                            <button id="selectStudentTab" class="px-6 py-3 bg-primary text-white font-medium">
+                                学生注册
+                            </button>
+                            <button id="selectTeacherTab"
+                                class="px-6 py-3 bg-white text-gray-600 font-medium hover:bg-gray-50 transition-colors">
+                                教师注册
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 学生注册表单 -->
+                    <div id="studentForm"
+                        class="bg-white rounded-xl shadow-lg p-6 md:p-8 card-shadow transform transition-all duration-500">
+                        <h3 class="text-xl font-bold text-dark mb-6 flex items-center">
+                            <i class="fa fa-user-circle text-primary mr-3 text-2xl"></i>
+                            学生信息表单
+                        </h3>
+                        <form id="studentRegistrationForm">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="col-span-1">
+                                    <label for="studentName"
+                                        class="block text-sm font-medium text-gray-700 mb-1">姓名</label>
+                                    <input type="text" id="studentName" name="studentName"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none"
+                                        placeholder="请输入您的姓名" required>
+                                </div>
+                                <div class="col-span-1">
+                                    <label for="studentId"
+                                        class="block text-sm font-medium text-gray-700 mb-1">学号</label>
+                                    <input type="text" id="studentId" name="studentId"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none"
+                                        placeholder="请输入您的学号" required>
+                                </div>
+                                <div class="col-span-1">
+                                    <label for="studentMajor"
+                                        class="block text-sm font-medium text-gray-700 mb-1">专业</label>
+                                    <input type="text" id="studentMajor" name="studentMajor"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none"
+                                        placeholder="请输入您的专业" required>
+                                </div>
+                                <div class="col-span-1">
+                                    <label for="studentGrade"
+                                        class="block text-sm font-medium text-gray-700 mb-1">年级</label>
+                                    <select id="studentGrade" name="studentGrade"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none"
+                                        required>
+                                        <option value="">请选择年级</option>
+                                        <option value="大一">大一</option>
+                                        <option value="大二">大二</option>
+                                        <option value="大三">大三</option>
+                                        <option value="大四">大四</option>
+                                        <option value="研究生">研究生</option>
+                                    </select>
+                                </div>
+                                <div class="col-span-1 md:col-span-2">
+                                    <label for="studentEmail"
+                                        class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+                                    <input type="email" id="studentEmail" name="studentEmail"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none"
+                                        placeholder="请输入您的邮箱" required>
+                                </div>
+                                <div class="col-span-1 md:col-span-2">
+                                    <label for="studentInterests"
+                                        class="block text-sm font-medium text-gray-700 mb-1">研究兴趣</label>
+                                    <textarea id="studentInterests" name="studentInterests" rows="3"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none"
+                                        placeholder="请描述您的研究兴趣和方向，越详细AI匹配越准确"></textarea>
+                                </div>
+                                <div class="col-span-1 md:col-span-2">
+                                    <label for="studentSkills"
+                                        class="block text-sm font-medium text-gray-700 mb-1">个人技能</label>
+                                    <input type="text" id="studentSkills" name="studentSkills"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none"
+                                        placeholder="请输入您的技能，用逗号分隔（例如：Python, Java, 机器学习）">
+                                </div>
+                            </div>
+                            <div class="mt-8 flex justify-end">
+                                <button type="submit"
+                                    class="px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-all duration-200 btn-hover flex items-center">
+                                    <i class="fa fa-check-circle mr-2"></i>提交信息
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- 教师注册表单 -->
+                    <div id="teacherForm"
+                        class="hidden bg-white rounded-xl shadow-lg p-6 md:p-8 card-shadow transform transition-all duration-500">
+                        <h3 class="text-xl font-bold text-dark mb-6 flex items-center">
+                            <i class="fa fa-user-circle text-primary mr-3 text-2xl"></i>
+                            教师信息表单
+                        </h3>
+                        <form id="teacherRegistrationForm">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="col-span-1">
+                                    <label for="teacherName"
+                                        class="block text-sm font-medium text-gray-700 mb-1">姓名</label>
+                                    <input type="text" id="teacherName" name="teacherName"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none"
+                                        placeholder="请输入您的姓名" required>
+                                </div>
+                                <div class="col-span-1">
+                                    <label for="teacherId"
+                                        class="block text-sm font-medium text-gray-700 mb-1">工号</label>
+                                    <input type="text" id="teacherId" name="teacherId"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none"
+                                        placeholder="请输入您的工号" required>
+                                </div>
+                                <div class="col-span-1">
+                                    <label for="teacherDepartment"
+                                        class="block text-sm font-medium text-gray-700 mb-1">院系</label>
+                                    <input type="text" id="teacherDepartment" name="teacherDepartment"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none"
+                                        placeholder="请输入您的院系" required>
+                                </div>
+                                <div class="col-span-1">
+                                    <label for="teacherTitle"
+                                        class="block text-sm font-medium text-gray-700 mb-1">职称</label>
+                                    <select id="teacherTitle" name="teacherTitle"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none"
+                                        required>
+                                        <option value="">请选择职称</option>
+                                        <option value="助教">助教</option>
+                                        <option value="讲师">讲师</option>
+                                        <option value="副教授">副教授</option>
+                                        <option value="教授">教授</option>
+                                    </select>
+                                </div>
+                                <div class="col-span-1 md:col-span-2">
+                                    <label for="teacherEmail"
+                                        class="block text-sm font-medium text-gray-700 mb-1">邮箱</label>
+                                    <input type="email" id="teacherEmail" name="teacherEmail"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none"
+                                        placeholder="请输入您的邮箱" required>
+                                </div>
+                                <div class="col-span-1 md:col-span-2">
+                                    <label for="teacherResearch"
+                                        class="block text-sm font-medium text-gray-700 mb-1">研究方向</label>
+                                    <textarea id="teacherResearch" name="teacherResearch" rows="3"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none"
+                                        placeholder="请描述您的主要研究方向和领域，越详细AI匹配越准确" required></textarea>
+                                </div>
+                                <div class="col-span-1 md:col-span-2">
+                                    <label for="teacherProjects"
+                                        class="block text-sm font-medium text-gray-700 mb-1">当前项目</label>
+                                    <textarea id="teacherProjects" name="teacherProjects" rows="3"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none"
+                                        placeholder="请描述您正在进行的项目，以及需要什么样的学生加入"></textarea>
+                                </div>
+                                <div class="col-span-1 md:col-span-2">
+                                    <label for="teacherRequirements"
+                                        class="block text-sm font-medium text-gray-700 mb-1">对学生的要求</label>
+                                    <textarea id="teacherRequirements" name="teacherRequirements" rows="2"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none"
+                                        placeholder="请描述您希望学生具备的技能和素质"></textarea>
+                                </div>
+                            </div>
+                            <div class="mt-8 flex justify-end">
+                                <button type="submit"
+                                    class="px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-all duration-200 btn-hover flex items-center">
+                                    <i class="fa fa-check-circle mr-2"></i>提交信息
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 学生列表区域 -->
+        <section id="students" class="py-12 md:py-16 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-dark mb-4">学生列表</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto">浏览学生信息，找到适合您项目的人才。点击"选择"按钮可以向学生发送邀请。</p>
+                </div>
+
+                <!-- 搜索和筛选 -->
+                <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                    <div class="relative w-full md:w-96">
+                        <input type="text" id="studentSearch" placeholder="搜索学生姓名、专业或研究方向..."
+                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg input-focus outline-none">
+                        <i class="fa fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        <select id="studentFilterMajor"
+                            class="px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none">
+                            <option value="">所有专业</option>
+                            <option value="计算机科学">计算机科学</option>
+                            <option value="电子工程">电子工程</option>
+                            <option value="机械工程">机械工程</option>
+                            <option value="金融学">金融学</option>
+                            <option value="会计学">会计学</option>
+                        </select>
+                        <select id="studentFilterGrade"
+                            class="px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none">
+                            <option value="">所有年级</option>
+                            <option value="大一">大一</option>
+                            <option value="大二">大二</option>
+                            <option value="大三">大三</option>
+                            <option value="大四">大四</option>
+                            <option value="研究生">研究生</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 学生卡片列表 -->
+                <div id="studentList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- 学生卡片将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 教师列表区域 -->
+        <section id="teachers" class="py-12 md:py-16 bg-gray-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-dark mb-4">教师列表</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto">浏览教师信息，找到与您研究方向匹配的导师。点击"选择"按钮可以向教师发送申请。</p>
+                </div>
+
+                <!-- 搜索和筛选 -->
+                <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                    <div class="relative w-full md:w-96">
+                        <input type="text" id="teacherSearch" placeholder="搜索教师姓名、院系或研究方向..."
+                            class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg input-focus outline-none">
+                        <i class="fa fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                    <div class="flex flex-wrap gap-3">
+                        <select id="teacherFilterDept"
+                            class="px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none">
+                            <option value="">所有院系</option>
+                            <option value="计算机学院">计算机学院</option>
+                            <option value="电子信息学院">电子信息学院</option>
+                            <option value="机械工程学院">机械工程学院</option>
+                            <option value="商学院">商学院</option>
+                            <option value="经济学院">经济学院</option>
+                        </select>
+                        <select id="teacherFilterTitle"
+                            class="px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none">
+                            <option value="">所有职称</option>
+                            <option value="助教">助教</option>
+                            <option value="讲师">讲师</option>
+                            <option value="副教授">副教授</option>
+                            <option value="教授">教授</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- 教师卡片列表 -->
+                <div id="teacherList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- 教师卡片将通过JavaScript动态生成 -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 智能匹配区域 -->
+        <section id="matches" class="py-12 md:py-16 bg-white">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-dark mb-4">AI智能匹配</h2>
+                    <p class="text-gray-600 max-w-2xl mx-auto">我们的AI系统会根据学生和教师的研究兴趣、技能和项目需求，自动推荐最合适的匹配组合。</p>
+                </div>
+
+                <!-- 匹配类型选择 -->
+                <div class="flex justify-center mb-8">
+                    <div class="inline-flex rounded-lg overflow-hidden shadow-sm border border-gray-200">
+                        <button id="studentMatchTab" class="px-6 py-3 bg-primary text-white font-medium">
+                            为学生匹配教师
+                        </button>
+                        <button id="teacherMatchTab"
+                            class="px-6 py-3 bg-white text-gray-600 font-medium hover:bg-gray-50 transition-colors">
+                            为教师匹配学生
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 匹配结果展示 -->
+                <div id="matchResults" class="max-w-5xl mx-auto">
+                    <!-- 匹配结果将通过JavaScript动态生成 -->
+                    <div class="text-center py-12">
+                        <div class="w-16 h-16 mx-auto bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                            <i class="fa fa-magic text-primary text-2xl"></i>
+                        </div>
+                        <h3 class="text-lg font-medium text-gray-700 mb-2">点击下方按钮开始智能匹配</h3>
+                        <p class="text-gray-500 mb-6">我们的AI系统将分析所有学生和教师的信息，找到最佳匹配组合</p>
+                        <button id="startMatchingBtn"
+                            class="px-6 py-3 bg-primary text-white font-medium rounded-lg hover:bg-primary/90 transition-all duration-200 btn-hover flex items-center mx-auto">
+                            <i class="fa fa-refresh mr-2"></i>开始智能匹配
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 关于平台 -->
+        <section id="about" class="py-12 md:py-16 bg-gray-50">
+            <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="max-w-3xl mx-auto text-center">
+                    <h2 class="text-[clamp(1.5rem,3vw,2.5rem)] font-bold text-dark mb-4">关于师生互选平台</h2>
+                    <p class="text-gray-600 mb-8">我们致力于搭建一个连接学生和教师的桥梁，促进学术交流与合作，帮助双方找到最适合的合作伙伴。</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+                        <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300">
+                            <div
+                                class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-4 mx-auto">
+                                <i class="fa fa-handshake-o text-primary text-2xl"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-dark mb-2">双向选择</h3>
+                            <p class="text-gray-600">学生可以自主选择感兴趣的教师，教师也可以挑选适合自己项目的学生。</p>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300">
+                            <div
+                                class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-4 mx-auto">
+                                <i class="fa fa-magic text-primary text-2xl"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-dark mb-2">智能匹配</h3>
+                            <p class="text-gray-600">基于AI算法的智能匹配系统，分析双方需求，提供最佳匹配建议。</p>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-xl shadow-sm hover:shadow-md transition-shadow duration-300">
+                            <div
+                                class="w-14 h-14 bg-primary/10 rounded-full flex items-center justify-center mb-4 mx-auto">
+                                <i class="fa fa-line-chart text-primary text-2xl"></i>
+                            </div>
+                            <h3 class="text-lg font-semibold text-dark mb-2">共同发展</h3>
+                            <p class="text-gray-600">通过合作实现教学相长，促进学术进步和个人发展。</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-primary/5 p-8 rounded-xl border border-primary/20">
+                        <h3 class="text-xl font-bold text-dark mb-4">平台使用指南</h3>
+                        <div class="text-left space-y-4 text-gray-700">
+                            <p>1. <span class="font-medium">注册账号</span> - 选择您的身份（学生或教师）并填写详细信息。</p>
+                            <p>2. <span class="font-medium">完善资料</span> - 提供详细的个人信息和研究方向，以便AI系统更好地匹配。</p>
+                            <p>3. <span class="font-medium">浏览选择</span> - 浏览适合您的学生或教师列表，使用筛选功能找到最佳匹配。</p>
+                            <p>4. <span class="font-medium">智能匹配</span> - 使用AI智能匹配功能，获取系统推荐的最佳合作对象。</p>
+                            <p>5. <span class="font-medium">发送申请</span> - 点击"选择"按钮向心仪的对象发送申请。</p>
+                            <p>6. <span class="font-medium">查看反馈</span> - 在个人中心查看申请状态和回复。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- 页脚 -->
+    <footer class="bg-dark text-white pt-12 pb-6">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+                <div>
+                    <div class="flex items-center space-x-2 mb-4">
+                        <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center">
+                            <i class="fa fa-graduation-cap text-primary text-xl"></i>
+                        </div>
+                        <h3 class="text-xl font-bold">师生互选平台</h3>
+                    </div>
+                    <p class="text-gray-400 mb-4">连接师生，共创未来</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fa fa-weixin text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fa fa-weibo text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors">
+                            <i class="fa fa-github text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">快速链接</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#home" class="text-gray-400 hover:text-white transition-colors">首页</a></li>
+                        <li><a href="#students" class="text-gray-400 hover:text-white transition-colors">学生列表</a></li>
+                        <li><a href="#teachers" class="text-gray-400 hover:text-white transition-colors">教师列表</a></li>
+                        <li><a href="#matches" class="text-gray-400 hover:text-white transition-colors">智能匹配</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-white transition-colors">关于平台</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">帮助中心</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">使用指南</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">常见问题</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">联系我们</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition-colors">隐私政策</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">联系我们</h4>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="fa fa-map-marker mt-1 mr-3 text-gray-400"></i>
+                            <span class="text-gray-400">北京市海淀区中关村大街1号</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-phone mr-3 text-gray-400"></i>
+                            <span class="text-gray-400">010-12345678</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fa fa-envelope mr-3 text-gray-400"></i>
+                            <span class="text-gray-400">contact@example.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-gray-700 pt-6 text-center text-gray-500 text-sm">
+                <p>&copy; 2023 师生互选平台. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 模态框 - 选择确认 -->
+    <div id="selectionModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-2xl p-6 max-w-md w-full mx-4 transform transition-all duration-300 scale-95 opacity-0"
+            id="modalContent">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                    <i class="fa fa-question-circle text-primary text-3xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-dark mb-2" id="modalTitle">确认选择</h3>
+                <p class="text-gray-600" id="modalMessage">您确定要选择这位老师/学生吗？</p>
+            </div>
+
+            <div class="mb-6">
+                <label for="selectionMessage" class="block text-sm font-medium text-gray-700 mb-1">附加信息（可选）</label>
+                <textarea id="selectionMessage" rows="3"
+                    class="w-full px-4 py-2 border border-gray-300 rounded-lg input-focus outline-none"
+                    placeholder="请输入您的申请理由或其他说明..."></textarea>
+            </div>
+
+            <div class="flex space-x-3">
+                <button id="cancelSelection"
+                    class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                    取消
+                </button>
+                <button id="confirmSelection"
+                    class="flex-1 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors btn-hover">
+                    确认选择
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 成功提示 -->
+    <div id="successToast"
+        class="fixed bottom-4 right-4 bg-success text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 flex items-center">
+        <i class="fa fa-check-circle mr-2"></i>
+        <span id="successMessage">操作成功！</span>
+    </div>
+
+    <!-- 加载中提示 -->
+    <div id="loadingToast"
+        class="fixed bottom-4 right-4 bg-primary text-white px-6 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 flex items-center">
+        <i class="fa fa-circle-o-notch fa-spin mr-2"></i>
+        <span id="loadingMessage">AI正在分析匹配中...</span>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        // 模拟数据 - 学生
+        const students = [
+            {
+                id: 1,
+                name: "张三",
+                studentId: "2021001",
+                major: "计算机科学",
+                grade: "大三",
+                email: "zhangsan@example.com",
+                interests: "人工智能、机器学习、计算机视觉",
+                skills: "Python, TensorFlow, PyTorch, C++",
+                avatar: "https://picsum.photos/id/1012/200/200"
+            },
+            {
+                id: 2,
+                name: "李四",
+                studentId: "2021002",
+                major: "电子工程",
+                grade: "大四",
+                email: "lisi@example.com",
+                interests: "嵌入式系统、物联网、智能硬件",
+                skills: "C, C++, Arduino, Raspberry Pi",
+                avatar: "https://picsum.photos/id/1005/200/200"
+            },
+            {
+                id: 3,
+                name: "王五",
+                studentId: "2021003",
+                major: "机械工程",
+                grade: "研究生",
+                email: "wangwu@example.com",
+                interests: "机器人学、自动化控制、3D打印",
+                skills: "SolidWorks, MATLAB, Python",
+                avatar: "https://picsum.photos/id/1074/200/200"
+            },
+            {
+                id: 4,
+                name: "赵六",
+                studentId: "2021004",
+                major: "金融学",
+                grade: "大三",
+                email: "zhaoliu@example.com",
+                interests: "金融科技、数据分析、量化交易",
+                skills: "Python, R, SQL, Excel",
+                avatar: "https://picsum.photos/id/1027/200/200"
+            },
+            {
+                id: 5,
+                name: "刘七",
+                studentId: "2021005",
+                major: "会计学",
+                grade: "大四",
+                email: "liuqi@example.com",
+                interests: "财务分析、审计、税务筹划",
+                skills: "Excel, SAP, 财务建模",
+                avatar: "https://picsum.photos/id/1062/200/200"
+            },
+            {
+                id: 6,
+                name: "孙八",
+                studentId: "2021006",
+                major: "计算机科学",
+                grade: "大二",
+                email: "sunba@example.com",
+                interests: "Web开发、移动应用开发、云计算",
+                skills: "JavaScript, React, Node.js, AWS",
+                avatar: "https://picsum.photos/id/1025/200/200"
+            }
+        ];
+
+        // 模拟数据 - 教师
+        const teachers = [
+            {
+                id: 1,
+                name: "陈教授",
+                teacherId: "T2001",
+                department: "计算机学院",
+                title: "教授",
+                email: "chen@example.com",
+                research: "人工智能、机器学习、大数据分析",
+                projects: "基于深度学习的图像识别系统研究；大规模数据挖掘与知识发现",
+                requirements: "熟悉Python编程语言，了解机器学习基本算法，有相关项目经验优先",
+                avatar: "https://picsum.photos/id/1000/200/200"
+            },
+            {
+                id: 2,
+                name: "李副教授",
+                teacherId: "T2002",
+                department: "电子信息学院",
+                title: "副教授",
+                email: "li@example.com",
+                research: "嵌入式系统、物联网技术、智能传感器",
+                projects: "基于物联网的智能家居系统开发；低功耗传感器网络研究",
+                requirements: "掌握C/C++编程，了解嵌入式系统开发，有Arduino或Raspberry Pi开发经验",
+                avatar: "https://picsum.photos/id/1001/200/200"
+            },
+            {
+                id: 3,
+                name: "王讲师",
+                teacherId: "T2003",
+                department: "机械工程学院",
+                title: "讲师",
+                email: "wang@example.com",
+                research: "机器人学、自动化控制、智能制造",
+                projects: "协作机器人设计与控制；基于机器视觉的工业检测系统",
+                requirements: "了解机器人学基本原理，掌握MATLAB或Python，有相关研究经验",
+                avatar: "https://picsum.photos/id/1002/200/200"
+            },
+            {
+                id: 4,
+                name: "张教授",
+                teacherId: "T2004",
+                department: "商学院",
+                title: "教授",
+                email: "zhang@example.com",
+                research: "金融科技、企业管理、战略规划",
+                projects: "金融科技在商业银行中的应用研究；企业数字化转型战略",
+                requirements: "了解金融市场基本原理，掌握数据分析工具，有相关研究或实习经验",
+                avatar: "https://picsum.photos/id/1003/200/200"
+            },
+            {
+                id: 5,
+                name: "刘副教授",
+                teacherId: "T2005",
+                department: "经济学院",
+                title: "副教授",
+                email: "liu@example.com",
+                research: "计量经济学、数据分析、宏观经济预测",
+                projects: "基于大数据的宏观经济预测模型研究；金融市场波动性分析",
+                requirements: "掌握计量经济学方法，熟悉R或Python数据分析工具",
+                avatar: "https://picsum.photos/id/1004/200/200"
+            },
+            {
+                id: 6,
+                name: "赵讲师",
+                teacherId: "T2006",
+                department: "计算机学院",
+                title: "讲师",
+                email: "zhao@example.com",
+                research: "Web开发、移动应用开发、云计算与边缘计算",
+                projects: "基于微服务架构的企业应用开发；边缘计算在物联网中的应用",
+                requirements: "掌握JavaScript/Node.js开发，了解云服务平台，有相关项目经验",
+                avatar: "https://picsum.photos/id/1006/200/200"
+            }
+        ];
+
+        // 当前选择的用户信息
+        let selectedUser = null;
+        let selectionType = null; // 'student' 或 'teacher'
+        let currentMatchType = 'student'; // 'student' 或 'teacher'
+
+        // DOM 加载完成后执行
+        document.addEventListener('DOMContentLoaded', function () {
+            // 初始化页面
+            renderStudentList(students);
+            renderTeacherList(teachers);
+
+            // 注册表单切换
+            const studentTab = document.getElementById('selectStudentTab');
+            const teacherTab = document.getElementById('selectTeacherTab');
+            const studentForm = document.getElementById('studentForm');
+            const teacherForm = document.getElementById('teacherForm');
+
+            studentTab.addEventListener('click', function () {
+                studentTab.classList.add('bg-primary', 'text-white');
+                studentTab.classList.remove('bg-white', 'text-gray-600');
+                teacherTab.classList.add('bg-white', 'text-gray-600');
+                teacherTab.classList.remove('bg-primary', 'text-white');
+                studentForm.classList.remove('hidden');
+                teacherForm.classList.add('hidden');
+            });
+
+            teacherTab.addEventListener('click', function () {
+                teacherTab.classList.add('bg-primary', 'text-white');
+                teacherTab.classList.remove('bg-white', 'text-gray-600');
+                studentTab.classList.add('bg-white', 'text-gray-600');
+                studentTab.classList.remove('bg-primary', 'text-white');
+                teacherForm.classList.remove('hidden');
+                studentForm.classList.add('hidden');
+            });
+
+            // 移动端菜单
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+
+            mobileMenuBtn.addEventListener('click', function () {
+                mobileMenu.classList.toggle('hidden');
+            });
+
+            // 学生注册表单提交
+            const studentRegistrationForm = document.getElementById('studentRegistrationForm');
+            studentRegistrationForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                showSuccessToast('学生信息提交成功！');
+                studentRegistrationForm.reset();
+            });
+
+            // 教师注册表单提交
+            const teacherRegistrationForm = document.getElementById('teacherRegistrationForm');
+            teacherRegistrationForm.addEventListener('submit', function (e) {
+                e.preventDefault();
+                showSuccessToast('教师信息提交成功！');
+                teacherRegistrationForm.reset();
+            });
+
+            // 搜索功能
+            const studentSearch = document.getElementById('studentSearch');
+            const studentFilterMajor = document.getElementById('studentFilterMajor');
+            const studentFilterGrade = document.getElementById('studentFilterGrade');
+
+            studentSearch.addEventListener('input', filterStudents);
+            studentFilterMajor.addEventListener('change', filterStudents);
+            studentFilterGrade.addEventListener('change', filterStudents);
+
+            const teacherSearch = document.getElementById('teacherSearch');
+            const teacherFilterDept = document.getElementById('teacherFilterDept');
+            const teacherFilterTitle = document.getElementById('teacherFilterTitle');
+
+            teacherSearch.addEventListener('input', filterTeachers);
+            teacherFilterDept.addEventListener('change', filterTeachers);
+            teacherFilterTitle.addEventListener('change', filterTeachers);
+
+            // 模态框操作
+            const selectionModal = document.getElementById('selectionModal');
+            const modalContent = document.getElementById('modalContent');
+            const cancelSelection = document.getElementById('cancelSelection');
+            const confirmSelection = document.getElementById('confirmSelection');
+
+            cancelSelection.addEventListener('click', function () {
+                selectionModal.classList.add('hidden');
+                setTimeout(() => {
+                    modalContent.classList.remove('scale-100', 'opacity-100');
+                    modalContent.classList.add('scale-95', 'opacity-0');
+                }, 300);
+            });
+
+            confirmSelection.addEventListener('click', function () {
+                selectionModal.classList.add('hidden');
+                setTimeout(() => {
+                    modalContent.classList.remove('scale-100', 'opacity-100');
+                    modalContent.classList.add('scale-95', 'opacity-0');
+
+                    if (selectionType === 'teacher') {
+                        showSuccessToast(`成功向${selectedUser.name}老师发送申请！`);
+                    } else {
+                        showSuccessToast(`成功选择${selectedUser.name}同学！`);
+                    }
+                }, 300);
+            });
+
+            // 导航栏滚动效果
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', function () {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('shadow-md');
+                    navbar.classList.remove('shadow-sm');
+                } else {
+                    navbar.classList.remove('shadow-md');
+                    navbar.classList.add('shadow-sm');
+                }
+            });
+
+            // 平滑滚动
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    e.preventDefault();
+
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+
+                        // 如果是移动端，点击后关闭菜单
+                        if (window.innerWidth < 768) {
+                            mobileMenu.classList.add('hidden');
+                        }
+                    }
+                });
+            });
+
+            // 匹配类型切换
+            const studentMatchTab = document.getElementById('studentMatchTab');
+            const teacherMatchTab = document.getElementById('teacherMatchTab');
+
+            studentMatchTab.addEventListener('click', function () {
+                currentMatchType = 'student';
+                studentMatchTab.classList.add('bg-primary', 'text-white');
+                studentMatchTab.classList.remove('bg-white', 'text-gray-600');
+                teacherMatchTab.classList.add('bg-white', 'text-gray-600');
+                teacherMatchTab.classList.remove('bg-primary', 'text-white');
+            });
+
+            teacherMatchTab.addEventListener('click', function () {
+                currentMatchType = 'teacher';
+                teacherMatchTab.classList.add('bg-primary', 'text-white');
+                teacherMatchTab.classList.remove('bg-white', 'text-gray-600');
+                studentMatchTab.classList.add('bg-white', 'text-gray-600');
+                studentMatchTab.classList.remove('bg-primary', 'text-white');
+            });
+
+            // 智能匹配按钮
+            const startMatchingBtn = document.getElementById('startMatchingBtn');
+            startMatchingBtn.addEventListener('click', function () {
+                startMatching();
+            });
+
+            // 首页匹配按钮
+            const matchBtn = document.getElementById('matchBtn');
+            matchBtn.addEventListener('click', function () {
+                document.querySelector('#matches').scrollIntoView({ behavior: 'smooth' });
+            });
+
+            // 首页学生注册按钮
+            const studentRegBtn = document.getElementById('studentRegBtn');
+            studentRegBtn.addEventListener('click', function () {
+                document.querySelector('#selectStudentTab').click();
+                document.querySelector('#home').scrollIntoView({ behavior: 'smooth', block: 'end' });
+                setTimeout(() => {
+                    window.scrollBy(0, 100);
+                }, 500);
+            });
+
+            // 首页教师注册按钮
+            const teacherRegBtn = document.getElementById('teacherRegBtn');
+            teacherRegBtn.addEventListener('click', function () {
+                document.querySelector('#selectTeacherTab').click();
+                document.querySelector('#home').scrollIntoView({ behavior: 'smooth', block: 'end' });
+                setTimeout(() => {
+                    window.scrollBy(0, 100);
+                }, 500);
+            });
+        });
+
+        // 渲染学生列表
+        function renderStudentList(studentList) {
+            const studentListElement = document.getElementById('studentList');
+            studentListElement.innerHTML = '';
+
+            if (studentList.length === 0) {
+                studentListElement.innerHTML = `
+          <div class="col-span-full text-center py-12">
+            <div class="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-4">
+              <i class="fa fa-search text-gray-400 text-2xl"></i>
+            </div>
+            <h3 class="text-lg font-medium text-gray-700 mb-2">未找到匹配的学生</h3>
+            <p class="text-gray-500">请尝试调整搜索条件或筛选条件</p>
+          </div>
+        `;
+                return;
+            }
+
+            studentList.forEach(student => {
+                const skills = student.skills.split(',').map(skill => skill.trim());
+
+                const studentCard = document.createElement('div');
+                studentCard.className = 'bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1';
+                studentCard.innerHTML = `
+          <div class="p-6">
+            <div class="flex items-start mb-4">
+              <img src="${student.avatar}" alt="${student.name}" class="w-16 h-16 rounded-full object-cover mr-4 border-2 border-primary/20">
+              <div>
+                <h3 class="text-lg font-bold text-dark">${student.name}</h3>
+                <p class="text-gray-500 text-sm">${student.studentId}</p>
+                <div class="flex items-center mt-1">
+                  <span class="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">${student.major}</span>
+                  <span class="ml-2 bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">${student.grade}</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mb-4">
+              <h4 class="text-sm font-medium text-gray-700 mb-1">研究兴趣</h4>
+              <p class="text-gray-600 text-sm">${student.interests}</p>
+            </div>
+            
+            <div class="mb-6">
+              <h4 class="text-sm font-medium text-gray-700 mb-1">个人技能</h4>
+              <div class="flex flex-wrap gap-2">
+                ${skills.map(skill => `
+                  <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">${skill}</span>
+                `).join('')}
+              </div>
+            </div>
+            
+            <button class="selectTeacherBtn w-full py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors btn-hover" 
+              data-id="${student.id}">
+              <i class="fa fa-user-plus mr-2"></i>选择此学生
+            </button>
+          </div>
+        `;
+
+                studentListElement.appendChild(studentCard);
+
+                // 添加选择按钮事件
+                const selectBtn = studentCard.querySelector('.selectTeacherBtn');
+                selectBtn.addEventListener('click', function () {
+                    const studentId = parseInt(this.getAttribute('data-id'));
+                    selectedUser = students.find(s => s.id === studentId);
+                    selectionType = 'student';
+
+                    document.getElementById('modalTitle').textContent = '选择学生';
+                    document.getElementById('modalMessage').textContent = `您确定要选择 ${selectedUser.name} 同学吗？`;
+
+                    const selectionModal = document.getElementById('selectionModal');
+                    const modalContent = document.getElementById('modalContent');
+
+                    selectionModal.classList.remove('hidden');
+                    setTimeout(() => {
+                        modalContent.classList.remove('scale-95', 'opacity-0');
+                        modalContent.classList.add('scale-100', 'opacity-100');
+                    }, 10);
+                });
+            });
+        }
+
+        // 渲染教师列表
+        function renderTeacherList(teacherList) {
+            const teacherListElement = document.getElementById('teacherList');
+            teacherListElement.innerHTML = '';
+
+            if (teacherList.length === 0) {
+                teacherListElement.innerHTML = `
+          <div class="col-span-full text-center py-12">
+            <div class="w-16 h-16 mx-auto bg-gray-100 rounded-full flex items-center justify-center mb-4">
+              <i class="fa fa-search text-gray-400 text-2xl"></i>
+            </div>
+            <h3 class="text-lg font-medium text-gray-700 mb-2">未找到匹配的教师</h3>
+            <p class="text-gray-500">请尝试调整搜索条件或筛选条件</p>
+          </div>
+        `;
+                return;
+            }
+
+            teacherList.forEach(teacher => {
+                const teacherCard = document.createElement('div');
+                teacherCard.className = 'bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 transform hover:-translate-y-1';
+                teacherCard.innerHTML = `
+          <div class="p-6">
+            <div class="flex items-start mb-4">
+              <img src="${teacher.avatar}" alt="${teacher.name}" class="w-16 h-16 rounded-full object-cover mr-4 border-2 border-primary/20">
+              <div>
+                <h3 class="text-lg font-bold text-dark">${teacher.name}</h3>
+                <p class="text-gray-500 text-sm">${teacher.teacherId}</p>
+                <div class="flex items-center mt-1">
+                  <span class="bg-primary/10 text-primary text-xs px-2 py-1 rounded-full">${teacher.department}</span>
+                  <span class="ml-2 bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">${teacher.title}</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="mb-4">
+              <h4 class="text-sm font-medium text-gray-700 mb-1">研究方向</h4>
+              <p class="text-gray-600 text-sm">${teacher.research}</p>
+            </div>
+            
+            <div class="mb-6">
+              <h4 class="text-sm font-medium text-gray-700 mb-1">当前项目</h4>
+              <p class="text-gray-600 text-sm">${teacher.projects}</p>
+            </div>
+            
+            <button class="selectTeacherBtn w-full py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors btn-hover" 
+              data-id="${teacher.id}">
+              <i class="fa fa-user-plus mr-2"></i>选择此教师
+            </button>
+          </div>
+        `;
+
+                teacherListElement.appendChild(teacherCard);
+
+                // 添加选择按钮事件
+                const selectBtn = teacherCard.querySelector('.selectTeacherBtn');
+                selectBtn.addEventListener('click', function () {
+                    const teacherId = parseInt(this.getAttribute('data-id'));
+                    selectedUser = teachers.find(t => t.id === teacherId);
+                    selectionType = 'teacher';
+
+                    document.getElementById('modalTitle').textContent = '选择教师';
+                    document.getElementById('modalMessage').textContent = `您确定要选择 ${selectedUser.name} 老师吗？`;
+
+                    const selectionModal = document.getElementById('selectionModal');
+                    const modalContent = document.getElementById('modalContent');
+
+                    selectionModal.classList.remove('hidden');
+                    setTimeout(() => {
+                        modalContent.classList.remove('scale-95', 'opacity-0');
+                        modalContent.classList.add('scale-100', 'opacity-100');
+                    }, 10);
+                });
+            });
+        }
+
+        // 筛选学生
+        function filterStudents() {
+            const searchTerm = document.getElementById('studentSearch').value.toLowerCase();
+            const majorFilter = document.getElementById('studentFilterMajor').value;
+            const gradeFilter = document.getElementById('studentFilterGrade').value;
+
+            const filteredStudents = students.filter(student => {
+                const matchesSearch =
+                    student.name.toLowerCase().includes(searchTerm) ||
+                    student.major.toLowerCase().includes(searchTerm) ||
+                    student.interests.toLowerCase().includes(searchTerm) ||
+                    student.skills.toLowerCase().includes(searchTerm);
+
+                const matchesMajor = majorFilter ? student.major === majorFilter : true;
+                const matchesGrade = gradeFilter ? student.grade === gradeFilter : true;
+
+                return matchesSearch && matchesMajor && matchesGrade;
+            });
+
+            renderStudentList(filteredStudents);
+        }
+
+        // 筛选教师
+        function filterTeachers() {
+            const searchTerm = document.getElementById('teacherSearch').value.toLowerCase();
+            const deptFilter = document.getElementById('teacherFilterDept').value;
+            const titleFilter = document.getElementById('teacherFilterTitle').value;
+
+            const filteredTeachers = teachers.filter(teacher => {
+                const matchesSearch =
+                    teacher.name.toLowerCase().includes(searchTerm) ||
+                    teacher.department.toLowerCase().includes(searchTerm) ||
+                    teacher.research.toLowerCase().includes(searchTerm) ||
+                    teacher.projects.toLowerCase().includes(searchTerm);
+
+                const matchesDept = deptFilter ? teacher.department === deptFilter : true;
+                const matchesTitle = titleFilter ? teacher.title === titleFilter : true;
+
+                return matchesSearch && matchesDept && matchesTitle;
+            });
+
+            renderTeacherList(filteredTeachers);
+        }
+
+        // 显示成功提示
+        function showSuccessToast(message) {
+            const successToast = document.getElementById('successToast');
+            const successMessage = document.getElementById('successMessage');
+
+            successMessage.textContent = message;
+            successToast.classList.remove('translate-y-20', 'opacity-0');
+
+            setTimeout(() => {
+                successToast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        // 显示加载提示
+        function showLoadingToast(message) {
+            const loadingToast = document.getElementById('loadingToast');
+            const loadingMessage = document.getElementById('loadingMessage');
+
+            loadingMessage.textContent = message;
+            loadingToast.classList.remove('translate-y-20', 'opacity-0');
+
+            return function hideLoading() {
+                loadingToast.classList.add('translate-y-20', 'opacity-0');
+            };
+        }
+
+        // 开始智能匹配
+        function startMatching() {
+            const hideLoading = showLoadingToast('AI正在分析匹配中...');
+
+            // 模拟AI匹配过程，实际应用中可能需要调用后端API
+            setTimeout(() => {
+                let matches;
+
+                if (currentMatchType === 'student') {
+                    // 为学生匹配教师
+                    matches = students.map(student => {
+                        const bestTeacher = findBestTeacherForStudent(student);
+                        return {
+                            student,
+                            teacher: bestTeacher.teacher,
+                            score: bestTeacher.score
+                        };
+                    }).sort((a, b) => b.score - a.score);
+
+                    renderStudentMatches(matches);
+                } else {
+                    // 为教师匹配学生
+                    matches = teachers.map(teacher => {
+                        const bestStudent = findBestStudentForTeacher(teacher);
+                        return {
+                            teacher,
+                            student: bestStudent.student,
+                            score: bestStudent.score
+                        };
+                    }).sort((a, b) => b.score - a.score);
+
+                    renderTeacherMatches(matches);
+                }
+
+                hideLoading();
+            }, 2000);
+        }
+
+        // 为学生找到最佳匹配的教师
+        function findBestTeacherForStudent(student) {
+            let bestMatch = { teacher: null, score: 0 };
+
+            teachers.forEach(teacher => {
+                let score = 0;
+
+                // 分析研究兴趣匹配度
+                const studentInterests = student.interests.toLowerCase().split('、');
+                const teacherResearch = teacher.research.toLowerCase();
+
+                studentInterests.forEach(interest => {
+                    if (teacherResearch.includes(interest.trim())) {
+                        score += 30; // 基础兴趣匹配分数
+                    }
+                });
+
+                // 分析技能匹配度
+                const studentSkills = student.skills.toLowerCase().split(',');
+                const teacherRequirements = teacher.requirements ? teacher.requirements.toLowerCase() : '';
+
+                studentSkills.forEach(skill => {
+                    if (teacherRequirements.includes(skill.trim())) {
+                        score += 20; // 技能匹配分数
+                    }
+                });
+
+                // 专业匹配度
+                if (teacher.research.toLowerCase().includes(student.major.toLowerCase())) {
+                    score += 15; // 专业匹配分数
+                }
+
+                // 随机因素模拟其他影响因素
+                score += Math.random() * 15;
+
+                if (score > bestMatch.score) {
+                    bestMatch = { teacher, score };
+                }
+            });
+
+            return bestMatch;
+        }
+
+        // 为教师找到最佳匹配的学生
+        function findBestStudentForTeacher(teacher) {
+            let bestMatch = { student: null, score: 0 };
+
+            students.forEach(student => {
+                let score = 0;
+
+                // 分析研究兴趣匹配度
+                const studentInterests = student.interests.toLowerCase().split('、');
+                const teacherResearch = teacher.research.toLowerCase();
+
+                studentInterests.forEach(interest => {
+                    if (teacherResearch.includes(interest.trim())) {
+                        score += 30; // 基础兴趣匹配分数
+                    }
+                });
+
+                // 分析技能匹配度
+                const studentSkills = student.skills.toLowerCase().split(',');
+                const teacherRequirements = teacher.requirements ? teacher.requirements.toLowerCase() : '';
+
+                studentSkills.forEach(skill => {
+                    if (teacherRequirements.includes(skill.trim())) {
+                        score += 20; // 技能匹配分数
+                    }
+                });
+
+                // 专业匹配度
+                if (teacher.research.toLowerCase().includes(student.major.toLowerCase())) {
+                    score += 15; // 专业匹配分数
+                }
+
+                // 年级因素（研究生加分）
+                if (student.grade === '研究生') {
+                    score += 10; // 研究生加分
+                }
+
+                // 随机因素模拟其他影响因素
+                score += Math.random() * 15;
+
+                if (score > bestMatch.score) {
+                    bestMatch = { student, score };
+                }
+            });
+
+            return bestMatch;
+        }
+
+        // 渲染学生匹配结果
+        function renderStudentMatches(matches) {
+            const matchResults = document.getElementById('matchResults');
+
+            let html = `
+        <div class="grid grid-cols-1 gap-6">
+          <div class="bg-primary/5 p-4 rounded-lg border border-primary/20">
+            <h3 class="text-lg font-bold text-dark flex items-center">
+              <i class="fa fa-users text-primary mr-2"></i>
+              学生与教师智能匹配结果
+            </h3>
+            <p class="text-gray-600 mt-1">根据学生的研究兴趣和技能，匹配最合适的指导教师</p>
+          </div>
+      `;
+
+            matches.forEach(match => {
+                const percentage = Math.round(match.score);
+
+                html += `
+          <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <div class="p-6">
+              <div class="flex flex-col md:flex-row gap-6">
+                <!-- 学生信息 -->
+                <div class="flex-1">
+                  <div class="flex items-center mb-4">
+                    <img src="${match.student.avatar}" alt="${match.student.name}" class="w-12 h-12 rounded-full object-cover mr-3 border-2 border-primary/20">
+                    <div>
+                      <h3 class="text-lg font-bold text-dark">${match.student.name}</h3>
+                      <p class="text-gray-500 text-sm">${match.student.major} · ${match.student.grade}</p>
+                    </div>
+                  </div>
+                  
+                  <div class="mb-3">
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">研究兴趣</h4>
+                    <p class="text-gray-600 text-sm">${match.student.interests}</p>
+                  </div>
+                  
+                  <div>
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">个人技能</h4>
+                    <div class="flex flex-wrap gap-2">
+                      ${match.student.skills.split(',').map(skill => `
+                        <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">${skill.trim()}</span>
+                      `).join('')}
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- 匹配度 -->
+                <div class="hidden md:flex flex-col items-center justify-center px-4">
+                  <div class="text-2xl font-bold text-primary mb-2">${percentage}%</div>
+                  <div class="w-24 h-8 bg-gray-100 rounded-full overflow-hidden">
+                    <div class="h-full bg-primary rounded-full" style="width: ${percentage}%"></div>
+                  </div>
+                  <div class="text-xs text-gray-500 mt-1">匹配度</div>
+                </div>
+                
+                <!-- 教师信息 -->
+                <div class="flex-1">
+                  <div class="flex items-center mb-4">
+                    <img src="${match.teacher.avatar}" alt="${match.teacher.name}" class="w-12 h-12 rounded-full object-cover mr-3 border-2 border-primary/20">
+                    <div>
+                      <h3 class="text-lg font-bold text-dark">${match.teacher.name}</h3>
+                      <p class="text-gray-500 text-sm">${match.teacher.department} · ${match.teacher.title}</p>
+                    </div>
+                  </div>
+                  
+                  <div class="mb-3">
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">研究方向</h4>
+                    <p class="text-gray-600 text-sm">${match.teacher.research}</p>
+                  </div>
+                  
+                  <div>
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">当前项目</h4>
+                    <p class="text-gray-600 text-sm">${match.teacher.projects}</p>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- 移动端匹配度 -->
+              <div class="mt-4 md:hidden">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-sm font-medium text-gray-700">匹配度</span>
+                  <span class="text-sm font-bold text-primary">${percentage}%</span>
+                </div>
+                <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-primary rounded-full" style="width: ${percentage}%"></div>
+                </div>
+              </div>
+              
+              <div class="mt-6 flex justify-end">
+                <button class="selectMatchedTeacherBtn px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors btn-hover flex items-center"
+                  data-teacher-id="${match.teacher.id}">
+                  <i class="fa fa-user-plus mr-2"></i>选择此教师
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+            });
+
+            html += `</div>`;
+
+            matchResults.innerHTML = html;
+
+            // 添加选择按钮事件
+            document.querySelectorAll('.selectMatchedTeacherBtn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const teacherId = parseInt(this.getAttribute('data-teacher-id'));
+                    selectedUser = teachers.find(t => t.id === teacherId);
+                    selectionType = 'teacher';
+
+                    document.getElementById('modalTitle').textContent = '选择教师';
+                    document.getElementById('modalMessage').textContent = `您确定要选择 ${selectedUser.name} 老师吗？`;
+
+                    const selectionModal = document.getElementById('selectionModal');
+                    const modalContent = document.getElementById('modalContent');
+
+                    selectionModal.classList.remove('hidden');
+                    setTimeout(() => {
+                        modalContent.classList.remove('scale-95', 'opacity-0');
+                        modalContent.classList.add('scale-100', 'opacity-100');
+                    }, 10);
+                });
+            });
+        }
+
+        // 渲染教师匹配结果
+        function renderTeacherMatches(matches) {
+            const matchResults = document.getElementById('matchResults');
+
+            let html = `
+        <div class="grid grid-cols-1 gap-6">
+          <div class="bg-primary/5 p-4 rounded-lg border border-primary/20">
+            <h3 class="text-lg font-bold text-dark flex items-center">
+              <i class="fa fa-users text-primary mr-2"></i>
+              教师与学生智能匹配结果
+            </h3>
+            <p class="text-gray-600 mt-1">根据教师的研究方向和项目需求，匹配最合适的学生</p>
+          </div>
+      `;
+
+            matches.forEach(match => {
+                const percentage = Math.round(match.score);
+
+                html += `
+          <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300">
+            <div class="p-6">
+              <div class="flex flex-col md:flex-row gap-6">
+                <!-- 教师信息 -->
+                <div class="flex-1">
+                  <div class="flex items-center mb-4">
+                    <img src="${match.teacher.avatar}" alt="${match.teacher.name}" class="w-12 h-12 rounded-full object-cover mr-3 border-2 border-primary/20">
+                    <div>
+                      <h3 class="text-lg font-bold text-dark">${match.teacher.name}</h3>
+                      <p class="text-gray-500 text-sm">${match.teacher.department} · ${match.teacher.title}</p>
+                    </div>
+                  </div>
+                  
+                  <div class="mb-3">
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">研究方向</h4>
+                    <p class="text-gray-600 text-sm">${match.teacher.research}</p>
+                  </div>
+                  
+                  <div>
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">当前项目</h4>
+                    <p class="text-gray-600 text-sm">${match.teacher.projects}</p>
+                  </div>
+                </div>
+                
+                <!-- 匹配度 -->
+                <div class="hidden md:flex flex-col items-center justify-center px-4">
+                  <div class="text-2xl font-bold text-primary mb-2">${percentage}%</div>
+                  <div class="w-24 h-8 bg-gray-100 rounded-full overflow-hidden">
+                    <div class="h-full bg-primary rounded-full" style="width: ${percentage}%"></div>
+                  </div>
+                  <div class="text-xs text-gray-500 mt-1">匹配度</div>
+                </div>
+                
+                <!-- 学生信息 -->
+                <div class="flex-1">
+                  <div class="flex items-center mb-4">
+                    <img src="${match.student.avatar}" alt="${match.student.name}" class="w-12 h-12 rounded-full object-cover mr-3 border-2 border-primary/20">
+                    <div>
+                      <h3 class="text-lg font-bold text-dark">${match.student.name}</h3>
+                      <p class="text-gray-500 text-sm">${match.student.major} · ${match.student.grade}</p>
+                    </div>
+                  </div>
+                  
+                  <div class="mb-3">
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">研究兴趣</h4>
+                    <p class="text-gray-600 text-sm">${match.student.interests}</p>
+                  </div>
+                  
+                  <div>
+                    <h4 class="text-sm font-medium text-gray-700 mb-1">个人技能</h4>
+                    <div class="flex flex-wrap gap-2">
+                      ${match.student.skills.split(',').map(skill => `
+                        <span class="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded-full">${skill.trim()}</span>
+                      `).join('')}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- 移动端匹配度 -->
+              <div class="mt-4 md:hidden">
+                <div class="flex justify-between items-center mb-1">
+                  <span class="text-sm font-medium text-gray-700">匹配度</span>
+                  <span class="text-sm font-bold text-primary">${percentage}%</span>
+                </div>
+                <div class="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-primary rounded-full" style="width: ${percentage}%"></div>
+                </div>
+              </div>
+              
+              <div class="mt-6 flex justify-end">
+                <button class="selectMatchedStudentBtn px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors btn-hover flex items-center"
+                  data-student-id="${match.student.id}">
+                  <i class="fa fa-user-plus mr-2"></i>选择此学生
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+            });
+
+            html += `</div>`;
+
+            matchResults.innerHTML = html;
+
+            // 添加选择按钮事件
+            document.querySelectorAll('.selectMatchedStudentBtn').forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const studentId = parseInt(this.getAttribute('data-student-id'));
+                    selectedUser = students.find(s => s.id === studentId);
+                    selectionType = 'student';
+
+                    document.getElementById('modalTitle').textContent = '选择学生';
+                    document.getElementById('modalMessage').textContent = `您确定要选择 ${selectedUser.name} 同学吗？`;
+
+                    const selectionModal = document.getElementById('selectionModal');
+                    const modalContent = document.getElementById('modalContent');
+
+                    selectionModal.classList.remove('hidden');
+                    setTimeout(() => {
+                        modalContent.classList.remove('scale-95', 'opacity-0');
+                        modalContent.classList.add('scale-100', 'opacity-100');
+                    }, 10);
+                });
+            });
+        }
+    </script>
 </body>
 
 </html>
